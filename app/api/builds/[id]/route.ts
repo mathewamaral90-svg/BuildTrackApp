@@ -12,10 +12,11 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
     include: {
       owner: { select: { username: true, displayName: true, bio: true } },
       parts: true, tasks: true, expenses: true, journal: true,
-      _count: { select: { comments: true, follows: true } }
+      _count: { select: { comments: true, follows: true, reactions: true } }
     }
   })
   if (!build) return NextResponse.json({ error: 'Build not found.' }, { status: 404 })
   const following = user ? !!(await prisma.buildFollow.findUnique({ where: { userId_buildId: { userId: user.id, buildId: id } } })) : false
-  return NextResponse.json({ build, isOwner: user?.id === build.ownerId, following })
+  const liked = user ? !!(await prisma.reaction.findUnique({ where: { userId_buildId: { userId: user.id, buildId: id } } })) : false
+  return NextResponse.json({ build, isOwner: user?.id === build.ownerId, following, liked })
 }
