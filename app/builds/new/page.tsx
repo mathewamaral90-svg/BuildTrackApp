@@ -1,0 +1,9 @@
+'use client'
+import Link from 'next/link'
+import { FormEvent, useState } from 'react'
+import { useRouter } from 'next/navigation'
+export default function NewBuild(){
+ const router=useRouter(); const [error,setError]=useState(''); const [loading,setLoading]=useState(false)
+ async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setLoading(true);setError('');const f=new FormData(e.currentTarget);const body=Object.fromEntries(f.entries());const r=await fetch('/api/builds',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(r.status===401){router.push('/login');return}if(!r.ok){setError(d.error||'Could not create build');setLoading(false);return}router.push('/builds/'+d.build.id)}
+ return <main className="auth-wrap"><div className="auth-card"><Link className="small-link" href="/dashboard">← My Garage</Link><h1>Add a vehicle</h1><p className="muted">Create the build you want to track.</p><form className="form" onSubmit={submit}>{error&&<div className="error">{error}</div>}<label>Year<input name="year" type="number" min="1886" max="2100" required placeholder="2014"/></label><label>Make<input name="make" required placeholder="Mitsubishi"/></label><label>Model<input name="model" required placeholder="Lancer Evolution X"/></label><label>Trim <span className="muted">(optional)</span><input name="trim" placeholder="GSR"/></label><label>Build nickname <span className="muted">(optional)</span><input name="nickname" placeholder="Street Build"/></label><label>Budget <span className="muted">(optional)</span><input name="budget" type="number" min="0" step="0.01" placeholder="25000"/></label><label>Description <span className="muted">(optional)</span><textarea name="description" placeholder="What are you building?"/></label><button className="btn btn-primary" disabled={loading}>{loading?'Creating…':'Create vehicle'}</button></form></div></main>
+}
