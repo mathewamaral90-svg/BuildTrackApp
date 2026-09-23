@@ -5,10 +5,17 @@ import { getCurrentUser } from '@/lib/auth'
 export const runtime = 'nodejs'
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
-  const user = await getCurrentUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
-  const build = await prisma.build.findFirst({ where: { id, ownerId: user.id }, include: { parts: true, tasks: true, expenses: true, journal: true } })
+  const user = await getCurrentUser()
+  const build = await prisma.build.findUnique({
+    where: { id },
+    include: {
+      owner: { select: { username: true, displayName: true, bio: true } },
+      parts: true, tasks: true, expenses: true, journal: true,
+      _count: { select: { comments: true, follows: true } }
+    }
+  })
   if (!build) return NextResponse.json({ error: 'Build not found.' }, { status: 404 })
-  return NextResponse.json({ build })
+  const following = user ? !!(await prisma.buildFollow.findUnique({ where: { userId_buildId: { userId: user.id, buildId: id } } })) : false
+  return NextResponse.json({ build, isOwner: user?.id === build.ownerId, following })
 }
