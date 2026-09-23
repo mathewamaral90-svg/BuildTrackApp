@@ -4,6 +4,15 @@ import { getCurrentUser } from '@/lib/auth'
 
 export const runtime = 'nodejs'
 
+export async function GET(_: Request, { params }: { params: Promise<{ username: string }> }) {
+  const me = await getCurrentUser()
+  const { username } = await params
+  const target = await prisma.user.findUnique({ where: { username }, select: { id: true } })
+  if (!target) return NextResponse.json({ error: 'Builder not found.' }, { status: 404 })
+  const following = me ? !!(await prisma.follow.findUnique({ where: { followerId_followingId: { followerId: me.id, followingId: target.id } } })) : false
+  return NextResponse.json({ following })
+}
+
 export async function POST(_: Request, { params }: { params: Promise<{ username: string }> }) {
   const me = await getCurrentUser()
   if (!me) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
