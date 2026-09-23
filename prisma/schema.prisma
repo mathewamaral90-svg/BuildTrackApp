@@ -1,51 +1,132 @@
-generator client { provider = "prisma-client-js" }
+generator client {
+  provider = "prisma-client-js"
+}
 
-datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 model User {
-  id String @id @default(cuid())
-  username String @unique
-  displayName String
-  email String? @unique
-  bio String?
-  avatarUrl String?
-  createdAt DateTime @default(now())
-  builds Build[]
-  comments Comment[]
-  posts AssistancePost[]
-  followsFollowing Follow[] @relation("following")
-  followsFollowers Follow[] @relation("followers")
+  id               String           @id @default(cuid())
+  username         String           @unique
+  displayName      String
+  email            String?          @unique
+  bio              String?
+  avatarUrl        String?
+  createdAt        DateTime         @default(now())
+  builds           Build[]
+  comments         Comment[]
+  posts            AssistancePost[]
+  followsFollowing Follow[]         @relation("following")
+  followsFollowers Follow[]         @relation("followers")
+  buildFollows     BuildFollow[]
 }
 
 model Build {
-  id String @id @default(cuid())
-  ownerId String
-  owner User @relation(fields:[ownerId], references:[id], onDelete:Cascade)
-  year Int
-  make String
-  model String
-  trim String?
-  nickname String?
-  description String?
-  progress Int @default(0)
-  budget Float @default(0)
-  spent Float @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  parts Part[]
-  tasks Task[]
-  expenses Expense[]
-  journal Journal[]
-  comments Comment[]
-  follows BuildFollow[]
+  id              String           @id @default(cuid())
+  ownerId         String
+  owner           User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  year            Int
+  make            String
+  model           String
+  trim            String?
+  nickname        String?
+  description     String?
+  progress        Int              @default(0)
+  budget          Float            @default(0)
+  spent           Float            @default(0)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  parts           Part[]
+  tasks           Task[]
+  expenses        Expense[]
+  journal         Journal[]
+  comments        Comment[]
+  follows         BuildFollow[]
   assistancePosts AssistancePost[]
 }
 
-model Part { id String @id @default(cuid()); buildId String; build Build @relation(fields:[buildId], references:[id], onDelete:Cascade); name String; manufacturer String?; category String?; price Float @default(0); status String @default("planned"); notes String?; createdAt DateTime @default(now()) }
-model Task { id String @id @default(cuid()); buildId String; build Build @relation(fields:[buildId], references:[id], onDelete:Cascade); name String; category String?; status String @default("todo"); priority String @default("normal"); createdAt DateTime @default(now()) }
-model Expense { id String @id @default(cuid()); buildId String; build Build @relation(fields:[buildId], references:[id], onDelete:Cascade); description String; amount Float; createdAt DateTime @default(now()) }
-model Journal { id String @id @default(cuid()); buildId String; build Build @relation(fields:[buildId], references:[id], onDelete:Cascade); title String; content String; imageUrl String?; createdAt DateTime @default(now()) }
-model Comment { id String @id @default(cuid()); userId String; buildId String; user User @relation(fields:[userId], references:[id], onDelete:Cascade); build Build @relation(fields:[buildId], references:[id], onDelete:Cascade); content String; createdAt DateTime @default(now()) }
-model Follow { followerId String; followingId String; follower User @relation("following", fields:[followerId], references:[id], onDelete:Cascade); following User @relation("followers", fields:[followingId], references:[id], onDelete:Cascade); createdAt DateTime @default(now()); @@id([followerId, followingId]) }
-model BuildFollow { userId String; buildId String; user User @relation(fields:[userId], references:[id], onDelete:Cascade); build Build @relation(fields:[buildId], references:[id], onDelete:Cascade); createdAt DateTime @default(now()); @@id([userId, buildId]) }
-model AssistancePost { id String @id @default(cuid()); authorId String; buildId String?; author User @relation(fields:[authorId], references:[id], onDelete:Cascade); build Build? @relation(fields:[buildId], references:[id], onDelete:SetNull); title String; content String; createdAt DateTime @default(now()) }
+model Part {
+  id           String   @id @default(cuid())
+  buildId      String
+  build        Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
+  name         String
+  manufacturer String?
+  category     String?
+  price        Float    @default(0)
+  status       String   @default("planned")
+  notes        String?
+  createdAt    DateTime @default(now())
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  buildId   String
+  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
+  name      String
+  category  String?
+  status    String   @default("todo")
+  priority  String   @default("normal")
+  createdAt DateTime @default(now())
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  buildId     String
+  build       Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
+  description String
+  amount      Float
+  createdAt   DateTime @default(now())
+}
+
+model Journal {
+  id        String   @id @default(cuid())
+  buildId   String
+  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
+  title     String
+  content   String
+  imageUrl  String?
+  createdAt DateTime @default(now())
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  userId    String
+  buildId   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model Follow {
+  followerId  String
+  followingId String
+  follower    User     @relation("following", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("followers", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@id([followerId, followingId])
+}
+
+model BuildFollow {
+  userId    String
+  buildId   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, buildId])
+}
+
+model AssistancePost {
+  id        String   @id @default(cuid())
+  authorId  String
+  buildId   String?
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  build     Build?   @relation(fields: [buildId], references: [id], onDelete: SetNull)
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+}
