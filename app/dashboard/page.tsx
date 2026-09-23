@@ -1,0 +1,10 @@
+'use client'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+type Build={id:string;year:number;make:string;model:string;trim?:string|null;nickname?:string|null;progress:number;budget:number;spent:number}
+export default function Dashboard(){
+ const [builds,setBuilds]=useState<Build[]>([]); const [loading,setLoading]=useState(true); const [error,setError]=useState('')
+ useEffect(()=>{fetch('/api/builds').then(async r=>{if(r.status===401){location.href='/login';return}const d=await r.json();if(!r.ok)throw Error(d.error);setBuilds(d.builds);setLoading(false)}).catch(e=>{setError(e.message);setLoading(false)})},[])
+ async function logout(){await fetch('/api/auth/logout',{method:'POST'});location.href='/login'}
+ return <main className="dashboard"><header className="topbar"><div className="topbar-inner"><Link className="brand" href="/">BUILD<span>TRACK</span></Link><div className="nav-mobile"><Link href="/dashboard">Garage</Link><button className="btn btn-ghost" onClick={logout}>Log out</button></div></div></header><section className="dash-main"><div className="dash-head"><div><h1>My Garage</h1><p className="muted">Your vehicles, projects and progress.</p></div><Link className="btn btn-primary" href="/builds/new">＋ Add vehicle</Link></div>{error&&<div className="error">{error}</div>}{loading?<p className="muted">Loading your garage…</p>:builds.length===0?<div className="empty"><h2>Your garage is empty.</h2><p>Add your first vehicle and start tracking the build.</p><Link className="btn btn-primary" href="/builds/new">Add my first vehicle</Link></div>:<div className="build-grid">{builds.map(b=><Link href={'/builds/'+b.id} className="build-card" key={b.id}><div className="build-meta">{b.year} {b.make}</div><h2>{b.model}</h2><p className="build-meta">{b.trim||b.nickname||'Build project'}</p><div className="progress"><i style={{width:b.progress+'%'}}/></div><div className="stats"><span>{b.progress}% complete</span><span>{'Budget $'+b.budget.toLocaleString()}</span></div></Link>)}</div>}</section></main>
+}
