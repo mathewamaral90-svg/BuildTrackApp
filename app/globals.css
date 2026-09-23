@@ -1,3 +1,26 @@
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }
-body { background: #09090b; color: #fff; }
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#08090b;color:#fff;font-family:Arial,Helvetica,sans-serif}
+a{text-decoration:none;color:inherit}
+.home{min-height:100vh;max-width:1200px;margin:0 auto;padding:0 28px 70px}
+.nav{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #24262b}
+.brand{font-size:22px;font-weight:900;letter-spacing:1px}.brand span{color:#f97316}
+.nav-links{display:flex;align-items:center;gap:24px;color:#b8bbc2}.nav-links a:hover{color:#fff}
+.hero{padding:100px 0 90px;max-width:850px}
+.eyebrow{color:#f97316;font-size:12px;font-weight:800;letter-spacing:2px;margin-bottom:18px}
+.hero h1{font-size:clamp(58px,9vw,108px);line-height:.88;margin:0 0 30px;letter-spacing:-5px}
+.hero h1 span{color:#f97316}
+.hero p{font-size:20px;line-height:1.6;color:#a8abb3;max-width:720px;margin:0 0 34px}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;padding:13px 20px;font-weight:800;cursor:pointer}
+.btn-primary{background:#f97316;color:#fff}.btn-primary:hover{background:#ea580c}
+.btn-secondary{background:#17191d;border:1px solid #30333a;color:#fff}.btn-secondary:hover{background:#202329}
+.btn-large{padding:16px 24px}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feature{background:#111318;border:1px solid #25282e;border-radius:16px;padding:28px;min-height:230px;transition:.2s}
+.feature:hover{border-color:#f97316;transform:translateY(-2px)}
+.feature-icon{font-size:12px;color:#f97316;font-weight:900;letter-spacing:2px}
+.feature h2{font-size:25px;margin:24px 0 10px}.feature p{color:#a8abb3;line-height:1.55;min-height:50px}.feature strong{color:#fff}
+.demo{margin-top:70px;padding:42px;border:1px solid #25282e;border-radius:18px;background:linear-gradient(135deg,#111318,#0d0e11);display:flex;align-items:center;justify-content:space-between;gap:30px}
+.demo h2{font-size:32px;margin:0 0 12px}.demo p{color:#a8abb3;margin:0;line-height:1.5}
+@media(max-width:800px){.feature-grid{grid-template-columns:1fr}.nav-links a:not(.btn){display:none}.hero{padding:70px 0}.hero h1{letter-spacing:-3px}.demo{flex-direction:column;align-items:flex-start}}
