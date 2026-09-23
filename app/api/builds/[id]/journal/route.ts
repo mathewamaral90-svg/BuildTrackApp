@@ -1,4 +1,4 @@
-import { NextResponse } from 'next'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 export const runtime='nodejs'
