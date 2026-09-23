@@ -4,6 +4,8 @@ import { getCurrentUser } from '@/lib/auth'
 import { notifyBuildFollowers } from '@/lib/notifications'
 export const runtime = 'nodejs'
 
+// Comments generate activity notifications for the build owner and followers.
+
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const comments = await prisma.comment.findMany({ where: { buildId: id }, orderBy: { createdAt: 'desc' }, include: { user: { select: { username: true, displayName: true } } } })
