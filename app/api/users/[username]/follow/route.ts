@@ -17,10 +17,30 @@ export async function POST(_: Request, { params }: { params: Promise<{ username:
   const me = await getCurrentUser()
   if (!me) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { username } = await params
-  const target = await prisma.user.findUnique({ where: { username }, select: { id: true } })
+  const target = await prisma.user.findUnique({ where: { username }, select: { id: true, displayName: true } })
   if (!target) return NextResponse.json({ error: 'Builder not found.' }, { status: 404 })
   if (target.id === me.id) return NextResponse.json({ error: 'You cannot follow yourself.' }, { status: 400 })
-  await prisma.follow.upsert({ where: { followerId_followingId: { followerId: me.id, followingId: target.id } }, create: { followerId: me.id, followingId: target.id }, update: {} })
+
+  const existing = await prisma.follow.findUnique({
+    where: { followerId_followingId: { followerId: me.id, followingId: target.id } }
+  })
+  await prisma.follow.upsert({
+    where: { followerId_followingId: { followerId: me.id, followingId: target.id } },
+    create: { followerId: me.id, followingId: target.id },
+    update: {}
+  })
+
+  if (!existing) {
+    await prisma.notification.create({
+      data: {
+        userId: target.id,
+        actorId: me.id,
+        type: 'follow',
+        message: `${me.displayName} started following you.`
+      }
+    })
+  }
+
   return NextResponse.json({ following: true })
 }
 
