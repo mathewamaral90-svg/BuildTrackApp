@@ -45,3 +45,5 @@ export async function notifyBuilderFollowers(actorId: string, type: string, mess
     }))
   })
 }
+
+// Notification helpers are shared by build activity API routes.
