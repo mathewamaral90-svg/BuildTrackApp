@@ -19,6 +19,9 @@ model User {
   comments           Comment[]
   posts              AssistancePost[]
   answers            AssistanceAnswer[]
+  socialPosts        SocialPost[]
+  socialComments     SocialComment[]
+  socialLikes        SocialLike[]
   followsFollowing   Follow[]       @relation("following")
   followsFollowers   Follow[]       @relation("followers")
   buildFollows       BuildFollow[]
@@ -61,6 +64,7 @@ model Build {
   follows         BuildFollow[]
   assistancePosts AssistancePost[]
   reactions       Reaction[]
+  socialPosts     SocialPost[]
 }
 
 model Part {
@@ -168,6 +172,43 @@ model Reaction {
   build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   @@unique([userId, buildId])
+}
+
+model SocialPost {
+  id          String          @id @default(cuid())
+  authorId    String
+  buildId     String?
+  author      User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  build       Build?          @relation(fields: [buildId], references: [id], onDelete: SetNull)
+  content     String
+  imageUrl    String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  comments    SocialComment[]
+  likes       SocialLike[]
+  @@index([createdAt])
+  @@index([buildId, createdAt])
+}
+
+model SocialLike {
+  id        String     @id @default(cuid())
+  userId    String
+  postId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  @@unique([userId, postId])
+}
+
+model SocialComment {
+  id        String     @id @default(cuid())
+  userId    String
+  postId    String
+  content   String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  @@index([postId, createdAt])
 }
 
 model Notification {
