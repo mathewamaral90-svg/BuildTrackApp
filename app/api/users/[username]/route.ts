@@ -10,17 +10,17 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
     select: {
       username: true, displayName: true, bio: true, avatarUrl: true, createdAt: true,
       _count: { select: { builds: true, followsFollowers: true, followsFollowing: true, socialPosts: true, socialLikes: true } },
-      builds: { orderBy: { updatedAt: 'desc' }, include: { _count: { select: { comments: true, follows: true, reactions: true } } } },
+      builds: { orderBy: { updatedAt: 'desc' }, include: { photos: { where: { isCover: true }, take: 1, select: { url: true } }, _count: { select: { comments: true, follows: true, reactions: true } } } },
       socialPosts: {
         orderBy: { createdAt: 'desc' },
         take: 12,
         include: {
-          build: { select: { id: true, year: true, make: true, model: true, nickname: true } },
+          build: { select: { id: true, year: true, make: true, model: true, nickname: true, photos: { where: { isCover: true }, take: 1, select: { url: true } } } },
           _count: { select: { likes: true, comments: true } }
         }
       }
     }
   })
   if (!user) return NextResponse.json({ error: 'Builder not found.' }, { status: 404 })
-  return NextResponse.json({ user })
+  return NextResponse.json({ user: { ...user, builds: user.builds.map(b => ({ ...b, coverUrl: b.photos[0]?.url || null, photos: undefined })), socialPosts: user.socialPosts.map(p => ({ ...p, build: p.build ? { ...p.build, coverUrl: p.build.photos[0]?.url || null, photos: undefined } : null })) } })
 }
