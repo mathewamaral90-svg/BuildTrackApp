@@ -23,5 +23,5 @@ export async function GET() {
       }
     })
   ])
-  return NextResponse.json({ builds, posts })
+  return NextResponse.json({ builds: builds.map(b => ({ ...b, coverUrl: b.photos[0]?.url || null, photos: undefined })), posts })
 }
