@@ -27,13 +27,13 @@ export async function GET(req: Request) {
     orderBy: { createdAt: 'desc' }, take,
     include: {
       author: { select: { username: true, displayName: true, avatarUrl: true } },
-      build: { select: { id: true, year: true, make: true, model: true, nickname: true } },
+      build: { select: { id: true, year: true, make: true, model: true, nickname: true, photos: { where: { isCover: true }, take: 1, select: { url: true } } } },
       _count: { select: { likes: true, comments: true } },
       likes: user ? { where: { userId: user.id }, select: { id: true } } : false,
       comments: { orderBy: { createdAt: 'asc' }, take: 3, include: { user: { select: { username: true, displayName: true } } } }
     }
   })
-  return NextResponse.json({ posts: posts.map(p => ({ ...p, liked: p.likes.length > 0, likes: undefined })) })
+  return NextResponse.json({ posts: posts.map(p => ({ ...p, liked: p.likes.length > 0, likes: undefined, build: p.build ? { ...p.build, coverUrl: p.build.photos[0]?.url || null, photos: undefined } : null })) })
 }
 
 export async function POST(req: Request) {
