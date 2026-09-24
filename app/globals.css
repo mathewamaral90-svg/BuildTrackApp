@@ -108,3 +108,8 @@
 .post-modal-caption{white-space:pre-wrap;color:#e2e6ea;line-height:1.6;margin:0 0 14px}
 .post-modal-build{margin-top:2px}
 @media(max-width:600px){.profile-post-grid{gap:2px;border-radius:10px}.profile-post-tile-overlay{opacity:1;padding:16px 7px 6px;font-size:10px}.post-modal-backdrop{padding:10px}.post-modal{max-height:calc(100vh - 20px);border-radius:12px}.post-modal-body{padding:17px}.post-modal-image{max-height:55vh}}
+
+/* Builder post upload toggle */
+.profile-post-composer .post-composer-heading{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.profile-post-composer .post-composer-heading>div{min-width:0}
+@media(max-width:600px){.profile-post-composer .post-composer-heading{align-items:stretch;flex-direction:column}.profile-post-composer .post-composer-heading .btn{width:100%}}
