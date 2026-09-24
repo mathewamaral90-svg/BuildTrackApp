@@ -31,13 +31,14 @@ export async function GET() {
     take: 40,
     include: {
       owner: { select: { username: true, displayName: true } },
+      photos: { where: { isCover: true }, take: 1, select: { url: true } },
       _count: { select: { comments: true, follows: true, reactions: true } },
       reactions: { where: { userId: user.id }, select: { id: true } }
     }
   })
 
   return NextResponse.json({
-    builds: builds.map(b => ({ ...b, liked: b.reactions.length > 0, reactions: undefined })),
+    builds: builds.map(b => ({ ...b, liked: b.reactions.length > 0, coverUrl: b.photos[0]?.url || null, reactions: undefined, photos: undefined })),
     followingBuilders: followingIds.length,
     followingBuilds: buildIds.length
   })
