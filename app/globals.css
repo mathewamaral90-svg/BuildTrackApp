@@ -65,3 +65,6 @@
   .analytics-card strong{font-size:31px}
   .dash-head h1{font-size:42px}
 }
+
+
+.photo-upload{margin:16px 0}.drop-zone{display:flex;min-height:150px;align-items:center;justify-content:center;flex-direction:column;gap:8px;border:2px dashed rgba(255,255,255,.22);border-radius:14px;padding:28px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);transition:.2s}.drop-zone:hover{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.04)}.drop-zone input{display:none}.drop-zone strong{font-size:16px}.drop-zone span{font-size:13px;opacity:.65}
