@@ -11,7 +11,7 @@ async function ensureChallenges() {
     { slug: 'build-progress', title: 'Progress Push', description: 'Reach 100% progress on one build during the season.', icon: '🏁', metric: 'completed build', target: 1 },
     { slug: 'community-connect', title: 'Community Connect', description: 'Follow 5 builds and join the conversation.', icon: '🤝', metric: 'build follows', target: 5 }
   ]
-  for (const c of defaults) await prisma.challenge.upsert({ where: { slug: c.slug }, update: {}, create: { ...c, startsAt: now, endsAt: end } })
+  for (const c of defaults) await prisma.challenge.upsert({ where: { slug: c.slug }, update: {}, create: { ...c, rewardPoints: 100, startsAt: now, endsAt: end } })
 }
 
 async function progressForUser(userId: string, metric: string, since: Date) {
