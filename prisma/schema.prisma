@@ -18,6 +18,7 @@ model User {
   builds             Build[]
   comments           Comment[]
   posts              AssistancePost[]
+  answers            AssistanceAnswer[]
   followsFollowing   Follow[]       @relation("following")
   followsFollowers   Follow[]       @relation("followers")
   buildFollows       BuildFollow[]
@@ -141,7 +142,21 @@ model AssistancePost {
   build     Build?   @relation(fields: [buildId], references: [id], onDelete: SetNull)
   title     String
   content   String
+  solved    Boolean  @default(false)
   createdAt DateTime @default(now())
+  answers   AssistanceAnswer[]
+}
+
+model AssistanceAnswer {
+  id        String         @id @default(cuid())
+  postId    String
+  authorId  String
+  content   String
+  accepted  Boolean        @default(false)
+  createdAt DateTime       @default(now())
+  post      AssistancePost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  @@index([postId, createdAt])
 }
 
 model Reaction {
