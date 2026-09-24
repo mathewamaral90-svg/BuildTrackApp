@@ -30,6 +30,7 @@ model User {
   reactions          Reaction[]
   notifications      Notification[] @relation("notificationUser")
   sentNotifications  Notification[] @relation("notificationActor")
+  challengeEntries   ChallengeEntry[]
 }
 
 model Session {
@@ -69,183 +70,49 @@ model Build {
   featuredBuild   FeaturedBuild?
 }
 
-model Part {
-  id           String   @id @default(cuid())
-  buildId      String
-  build        Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
-  name         String
-  manufacturer String?
-  category     String?
-  price        Float    @default(0)
-  status       String   @default("planned")
-  notes        String?
-  createdAt    DateTime @default(now())
-}
+model Part { id String @id @default(cuid()); buildId String; build Build @relation(fields: [buildId], references: [id], onDelete: Cascade); name String; manufacturer String?; category String?; price Float @default(0); status String @default("planned"); notes String?; createdAt DateTime @default(now()) }
+model Task { id String @id @default(cuid()); buildId String; build Build @relation(fields: [buildId], references: [id], onDelete: Cascade); name String; category String?; status String @default("todo"); priority String @default("normal"); createdAt DateTime @default(now()) }
+model Expense { id String @id @default(cuid()); buildId String; build Build @relation(fields: [buildId], references: [id], onDelete: Cascade); description String; amount Float; createdAt DateTime @default(now()) }
+model Journal { id String @id @default(cuid()); buildId String; build Build @relation(fields: [buildId], references: [id], onDelete: Cascade); title String; content String; imageUrl String?; createdAt DateTime @default(now()) }
+model Comment { id String @id @default(cuid()); userId String; buildId String; user User @relation(fields: [userId], references: [id], onDelete: Cascade); build Build @relation(fields: [buildId], references: [id], onDelete: Cascade); content String; createdAt DateTime @default(now()) }
+model Follow { followerId String; followingId String; follower User @relation("following", fields: [followerId], references: [id], onDelete: Cascade); following User @relation("followers", fields: [followingId], references: [id], onDelete: Cascade); createdAt DateTime @default(now()); @@id([followerId, followingId]) }
+model BuildFollow { userId String; buildId String; user User @relation(fields: [userId], references: [id], onDelete: Cascade); build Build @relation(fields: [buildId], references: [id], onDelete: Cascade); createdAt DateTime @default(now()); @@id([userId, buildId]) }
+model AssistancePost { id String @id @default(cuid()); authorId String; buildId String?; author User @relation(fields: [authorId], references: [id], onDelete: Cascade); build Build? @relation(fields: [buildId], references: [id], onDelete: SetNull); title String; content String; solved Boolean @default(false); createdAt DateTime @default(now()); answers AssistanceAnswer[] }
+model AssistanceAnswer { id String @id @default(cuid()); postId String; authorId String; content String; accepted Boolean @default(false); createdAt DateTime @default(now()); post AssistancePost @relation(fields: [postId], references: [id], onDelete: Cascade); author User @relation(fields: [authorId], references: [id], onDelete: Cascade); @@index([postId, createdAt]) }
+model Reaction { id String @id @default(cuid()); userId String; buildId String; type String @default("like"); user User @relation(fields: [userId], references: [id], onDelete: Cascade); build Build @relation(fields: [buildId], references: [id], onDelete: Cascade); createdAt DateTime @default(now()); @@unique([userId, buildId]) }
+model SocialPost { id String @id @default(cuid()); authorId String; buildId String?; author User @relation(fields: [authorId], references: [id], onDelete: Cascade); build Build? @relation(fields: [buildId], references: [id], onDelete: SetNull); content String; imageUrl String?; createdAt DateTime @default(now()); updatedAt DateTime @updatedAt; comments SocialComment[]; likes SocialLike[]; @@index([createdAt]); @@index([buildId, createdAt]) }
+model SocialLike { id String @id @default(cuid()); userId String; postId String; user User @relation(fields: [userId], references: [id], onDelete: Cascade); post SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade); createdAt DateTime @default(now()); @@unique([userId, postId]) }
+model SocialComment { id String @id @default(cuid()); userId String; postId String; content String; user User @relation(fields: [userId], references: [id], onDelete: Cascade); post SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade); createdAt DateTime @default(now()); @@index([postId, createdAt]) }
+model Notification { id String @id @default(cuid()); userId String; actorId String?; type String; message String; buildId String?; read Boolean @default(false); createdAt DateTime @default(now()); user User @relation("notificationUser", fields: [userId], references: [id], onDelete: Cascade); actor User? @relation("notificationActor", fields: [actorId], references: [id], onDelete: SetNull) }
+model BuildPhoto { id String @id @default(cuid()); buildId String; build Build @relation(fields: [buildId], references: [id], onDelete: Cascade); url String; caption String?; isCover Boolean @default(false); createdAt DateTime @default(now()); @@index([buildId, createdAt]) }
+model FeaturedBuild { id String @id @default(cuid()); buildId String @unique; build Build @relation(fields: [buildId], references: [id], onDelete: Cascade); kind String @default("featured"); startAt DateTime @default(now()); endAt DateTime?; createdAt DateTime @default(now()); updatedAt DateTime @updatedAt; @@index([kind, startAt, endAt]) }
 
-model Task {
-  id        String   @id @default(cuid())
-  buildId   String
-  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
-  name      String
-  category  String?
-  status    String   @default("todo")
-  priority  String   @default("normal")
-  createdAt DateTime @default(now())
-}
-
-model Expense {
-  id          String   @id @default(cuid())
-  buildId     String
-  build       Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
+model Challenge {
+  id String @id @default(cuid())
+  slug String @unique
+  title String
   description String
-  amount      Float
-  createdAt   DateTime @default(now())
-}
-
-model Journal {
-  id        String   @id @default(cuid())
-  buildId   String
-  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
-  title     String
-  content   String
-  imageUrl  String?
-  createdAt DateTime @default(now())
-}
-
-model Comment {
-  id        String   @id @default(cuid())
-  userId    String
-  buildId   String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
-  content   String
-  createdAt DateTime @default(now())
-}
-
-model Follow {
-  followerId  String
-  followingId String
-  follower    User     @relation("following", fields: [followerId], references: [id], onDelete: Cascade)
-  following   User     @relation("followers", fields: [followingId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  @@id([followerId, followingId])
-}
-
-model BuildFollow {
-  userId    String
-  buildId   String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  @@id([userId, buildId])
-}
-
-model AssistancePost {
-  id        String   @id @default(cuid())
-  authorId  String
-  buildId   String?
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  build     Build?   @relation(fields: [buildId], references: [id], onDelete: SetNull)
-  title     String
-  content   String
-  solved    Boolean  @default(false)
-  createdAt DateTime @default(now())
-  answers   AssistanceAnswer[]
-}
-
-model AssistanceAnswer {
-  id        String         @id @default(cuid())
-  postId    String
-  authorId  String
-  content   String
-  accepted  Boolean        @default(false)
-  createdAt DateTime       @default(now())
-  post      AssistancePost @relation(fields: [postId], references: [id], onDelete: Cascade)
-  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  @@index([postId, createdAt])
-}
-
-model Reaction {
-  id        String   @id @default(cuid())
-  userId    String
-  buildId   String
-  type      String   @default("like")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  @@unique([userId, buildId])
-}
-
-model SocialPost {
-  id          String          @id @default(cuid())
-  authorId    String
-  buildId     String?
-  author      User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  build       Build?          @relation(fields: [buildId], references: [id], onDelete: SetNull)
-  content     String
-  imageUrl    String?
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  comments    SocialComment[]
-  likes       SocialLike[]
-  @@index([createdAt])
-  @@index([buildId, createdAt])
-}
-
-model SocialLike {
-  id        String     @id @default(cuid())
-  userId    String
-  postId    String
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post      SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-  createdAt DateTime   @default(now())
-  @@unique([userId, postId])
-}
-
-model SocialComment {
-  id        String     @id @default(cuid())
-  userId    String
-  postId    String
-  content   String
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post      SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-  createdAt DateTime   @default(now())
-  @@index([postId, createdAt])
-}
-
-model Notification {
-  id        String   @id @default(cuid())
-  userId    String
-  actorId   String?
-  type      String
-  message   String
-  buildId   String?
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now())
-  user      User     @relation("notificationUser", fields: [userId], references: [id], onDelete: Cascade)
-  actor     User?    @relation("notificationActor", fields: [actorId], references: [id], onDelete: SetNull)
-}
-
-model BuildPhoto {
-  id        String   @id @default(cuid())
-  buildId   String
-  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
-  url       String
-  caption   String?
-  isCover   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  @@index([buildId, createdAt])
-}
-
-
-model FeaturedBuild {
-  id        String   @id @default(cuid())
-  buildId   String   @unique
-  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
-  kind      String   @default("featured")
-  startAt   DateTime @default(now())
-  endAt     DateTime?
+  icon String @default("🏁")
+  metric String
+  target Int
+  startsAt DateTime
+  endsAt DateTime
+  active Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  @@index([kind, startAt, endAt])
+  entries ChallengeEntry[]
+  @@index([active, startsAt, endsAt])
+}
+
+model ChallengeEntry {
+  id String @id @default(cuid())
+  challengeId String
+  userId String
+  progress Int @default(0)
+  completedAt DateTime?
+  joinedAt DateTime @default(now())
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([challengeId, userId])
+  @@index([challengeId, progress])
 }
