@@ -42,11 +42,13 @@ export async function POST(req: Request) {
   const body = await req.json()
   const content = String(body.content ?? '').trim()
   if (!content || content.length > 5000) return NextResponse.json({ error: 'Post must be 1–5000 characters.' }, { status: 400 })
+  const hashtags = String(body.hashtags ?? '').trim().replace(/\s+/g, ' ')
+  if (hashtags.length > 500) return NextResponse.json({ error: 'Hashtags must be 500 characters or less.' }, { status: 400 })
   const buildId = String(body.buildId ?? '').trim() || null
   if (buildId) {
     const build = await prisma.build.findFirst({ where: { id: buildId, ownerId: user.id }, select: { id: true } })
     if (!build) return NextResponse.json({ error: 'You can only attach your own build.' }, { status: 403 })
   }
-  const post = await prisma.socialPost.create({ data: { authorId: user.id, buildId, content, imageUrl: String(body.imageUrl ?? '').trim() || null }, include: { author: { select: { username: true, displayName: true, avatarUrl: true } }, build: true, _count: { select: { likes: true, comments: true } } } })
+  const post = await prisma.socialPost.create({ data: { authorId: user.id, buildId, content, imageUrl: String(body.imageUrl ?? '').trim() || null, hashtags: hashtags || null }, include: { author: { select: { username: true, displayName: true, avatarUrl: true } }, build: true, _count: { select: { likes: true, comments: true } } } })
   return NextResponse.json({ post }, { status: 201 })
 }
