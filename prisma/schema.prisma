@@ -173,6 +173,7 @@ model SocialPost {
   build Build? @relation(fields: [buildId], references: [id], onDelete: SetNull)
   content String
   imageUrl String?
+  hashtags String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   comments SocialComment[]
