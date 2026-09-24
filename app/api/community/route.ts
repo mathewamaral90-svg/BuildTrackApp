@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 export const runtime = 'nodejs'
 
 export async function GET() {
-  const [builds, posts, trendingSource] = await Promise.all([
+  const [builds, trendingSource, posts] = await Promise.all([
     prisma.build.findMany({
       orderBy: { updatedAt: 'desc' }, take: 20,
       include: { owner: { select: { username: true, displayName: true } }, photos: { where: { isCover: true }, take: 1, select: { url: true } }, _count: { select: { comments: true, follows: true, reactions: true } } }
