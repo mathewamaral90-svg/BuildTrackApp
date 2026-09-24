@@ -65,6 +65,7 @@ model Build {
   assistancePosts AssistancePost[]
   reactions       Reaction[]
   socialPosts     SocialPost[]
+  photos          BuildPhoto[]
 }
 
 model Part {
@@ -222,4 +223,15 @@ model Notification {
   createdAt DateTime @default(now())
   user      User     @relation("notificationUser", fields: [userId], references: [id], onDelete: Cascade)
   actor     User?    @relation("notificationActor", fields: [actorId], references: [id], onDelete: SetNull)
+}
+
+model BuildPhoto {
+  id        String   @id @default(cuid())
+  buildId   String
+  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade)
+  url       String
+  caption   String?
+  isCover   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  @@index([buildId, createdAt])
 }
