@@ -31,7 +31,6 @@ model User {
   notifications Notification[] @relation("notificationUser")
   sentNotifications Notification[] @relation("notificationActor")
   challengeEntries ChallengeEntry[]
-  passwordResetTokens PasswordResetToken[]
 }
 model Session {
   id String @id @default(cuid())
@@ -261,13 +260,4 @@ model ChallengeEntry {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@unique([challengeId, userId])
   @@index([challengeId, progress])
-}
-model PasswordResetToken {
-  id String @id @default(cuid())
-  userId String
-  tokenHash String @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  @@index([userId, expiresAt])
 }

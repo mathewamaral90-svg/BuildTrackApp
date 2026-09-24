@@ -1,8 +1,0 @@
-'use client'
-import Link from 'next/link'
-import { FormEvent, useState } from 'react'
-export default function ForgotPassword(){
- const [message,setMessage]=useState(''); const [error,setError]=useState(''); const [loading,setLoading]=useState(false)
- async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setLoading(true);setError('');setMessage('');try{const f=new FormData(e.currentTarget);const r=await fetch('/api/auth/forgot-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:f.get('email')})});const d=await r.json();if(!r.ok){setError(d.error||'Unable to process request.');}else setMessage(d.message)}catch{setError('Connection error. Please try again.')}finally{setLoading(false)}}
- return <main className="auth-wrap"><div className="auth-card"><Link className="small-link" href="/login">← Back to login</Link><h1>Forgot password?</h1><p className="muted">Enter the email address on your BuildTrack account and we’ll send a reset link.</p><form className="form" onSubmit={submit}>{error&&<div className="error">{error}</div>}{message&&<div className="success">{message}</div>}<label>Email<input name="email" type="email" required autoComplete="email"/></label><button className="btn btn-primary" disabled={loading}>{loading?'Sending…':'Send reset link'}</button></form><p className="muted"><Link className="small-link" href="/login">Return to login</Link></p></div></main>
-}
