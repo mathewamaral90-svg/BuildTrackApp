@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { FormEvent, useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 
-type Build={id:string;ownerId:string;year:number;make:string;model:string;trim?:string|null;nickname?:string|null;description?:string|null;progress:number;budget:number;spent:number;parts:any[];tasks:any[];expenses:any[];journal:any[];owner:{username:string;displayName:string};_count:{comments:number;follows:number;reactions:number}}
+type Build={id:string;createdAt:string;ownerId:string;year:number;make:string;model:string;trim?:string|null;nickname?:string|null;description?:string|null;progress:number;budget:number;spent:number;parts:any[];tasks:any[];expenses:any[];journal:any[];owner:{username:string;displayName:string};_count:{comments:number;follows:number;reactions:number}}
 type Comment={id:string;content:string;createdAt:string;user:{username:string;displayName:string}}
 type Photo={id:string;buildId:string;url:string;caption?:string|null;isCover:boolean;createdAt:string;legacy?:boolean}
 
