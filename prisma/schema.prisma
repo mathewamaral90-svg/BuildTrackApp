@@ -242,6 +242,7 @@ model Challenge {
   startsAt DateTime
   endsAt DateTime
   active Boolean @default(true)
+  rewardPoints Int @default(100)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   entries ChallengeEntry[]
@@ -253,6 +254,7 @@ model ChallengeEntry {
   userId String
   progress Int @default(0)
   completedAt DateTime?
+  rewardGranted Boolean @default(false)
   joinedAt DateTime @default(now())
   challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
