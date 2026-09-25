@@ -6,6 +6,7 @@ export const runtime = 'nodejs'
 
 export async function GET(_: Request, { params }: { params: Promise<{ username: string }> }) {
   const { username } = await params
+  const currentUser = await getCurrentUser()
   const user = await prisma.user.findUnique({
     where: { username },
     select: {
@@ -23,7 +24,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
     }
   })
   if (!user) return NextResponse.json({ error: 'Builder not found.' }, { status: 404 })
-  return NextResponse.json({ user: { ...user, builds: user.builds.map(b => ({ ...b, coverUrl: b.photos[0]?.url || null, photos: undefined })), socialPosts: user.socialPosts.map(p => ({ ...p, build: p.build ? { ...p.build, coverUrl: p.build.photos[0]?.url || null, photos: undefined } : null })) } })
+  return NextResponse.json({ user: { ...user, isOwner: currentUser?.id === user.id, builds: user.builds.map(b => ({ ...b, coverUrl: b.photos[0]?.url || null, photos: undefined })), socialPosts: user.socialPosts.map(p => ({ ...p, build: p.build ? { ...p.build, coverUrl: p.build.photos[0]?.url || null, photos: undefined } : null })) } })
 }
 
 
