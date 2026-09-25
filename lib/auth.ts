@@ -24,7 +24,7 @@ export async function createSession(userId: string) {
   const expiresAt = new Date(Date.now() + DAYS * 24 * 60 * 60 * 1000)
   await prisma.session.create({ data: { token, userId, expiresAt } })
   const store = await cookies()
-  store.set(COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', expires: expiresAt, path: '/' })
+  store.set(COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', expires: expiresAt, maxAge: DAYS * 24 * 60 * 60, path: '/' })
 }
 
 export async function getCurrentUser() {
@@ -32,6 +32,13 @@ export async function getCurrentUser() {
   if (!token) return null
   const session = await prisma.session.findUnique({ where: { token }, include: { user: true } })
   if (!session || session.expiresAt < new Date()) return null
+  // Keep an active user signed in while they continue using the app.
+  const refreshedExpiry = new Date(Date.now() + DAYS * 24 * 60 * 60 * 1000)
+  if (session.expiresAt.getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000) {
+    await prisma.session.update({ where: { token }, data: { expiresAt: refreshedExpiry } })
+    const store = await cookies()
+    store.set(COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', expires: refreshedExpiry, maxAge: DAYS * 24 * 60 * 60, path: '/' })
+  }
   return session.user
 }
 
