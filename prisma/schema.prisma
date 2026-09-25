@@ -13,6 +13,7 @@ model User {
   displayName String
   email String? @unique
   bio String?
+  status String?
   avatarUrl String?
   createdAt DateTime @default(now())
   builds Build[]
