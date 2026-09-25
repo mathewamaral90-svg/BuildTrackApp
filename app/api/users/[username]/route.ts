@@ -10,7 +10,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
   const user = await prisma.user.findUnique({
     where: { username },
     select: {
-      username: true, displayName: true, bio: true, avatarUrl: true, createdAt: true,
+      id: true, username: true, displayName: true, bio: true, avatarUrl: true, createdAt: true,
       _count: { select: { builds: true, followsFollowers: true, followsFollowing: true, socialPosts: true, socialLikes: true } },
       builds: { orderBy: { updatedAt: 'desc' }, include: { photos: { where: { isCover: true }, take: 1, select: { url: true } }, _count: { select: { comments: true, follows: true, reactions: true } } } },
       socialPosts: {
