@@ -19,6 +19,7 @@ export async function GET() {
       username: true,
       displayName: true,
       bio: true,
+      status: true,
       avatarUrl: true,
       _count: {
         select: {
@@ -64,6 +65,7 @@ export async function GET() {
       username: user.username,
       displayName: user.displayName,
       bio: user.bio,
+      status: user.status,
       avatarUrl: user.avatarUrl,
       buildsCount: user._count.builds,
       postsCount: user._count.socialPosts,
