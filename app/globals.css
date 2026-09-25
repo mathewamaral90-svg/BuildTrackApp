@@ -132,3 +132,5 @@
  .profile-bio-actions{align-items:stretch;flex-direction:column}
  .profile-bio-actions .btn{width:100%;min-height:46px}
 }
+
+.profile-edit-toggle{margin:8px 0 10px}.profile-bio-form{margin-top:4px}
