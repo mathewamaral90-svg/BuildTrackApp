@@ -10,7 +10,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
   const user = await prisma.user.findUnique({
     where: { username },
     select: {
-      id: true, username: true, displayName: true, bio: true, avatarUrl: true, createdAt: true,
+      id: true, username: true, displayName: true, bio: true, status: true, avatarUrl: true, createdAt: true,
       _count: { select: { builds: true, followsFollowers: true, followsFollowing: true, socialPosts: true, socialLikes: true } },
       builds: { orderBy: { updatedAt: 'desc' }, include: { photos: { where: { isCover: true }, take: 1, select: { url: true } }, _count: { select: { comments: true, follows: true, reactions: true } } } },
       socialPosts: {
@@ -36,9 +36,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ user
 
   const body = await request.json().catch(() => ({}))
   const bio = String(body.bio ?? '').trim()
+  const status = String(body.status ?? '').trim()
   const avatarUrl = body.avatarUrl == null || body.avatarUrl === '' ? currentUser.avatarUrl : String(body.avatarUrl).trim()
 
   if (bio.length > 500) return NextResponse.json({ error: 'Bio must be 500 characters or less.' }, { status: 400 })
+  if (status.length > 100) return NextResponse.json({ error: 'Status must be 100 characters or less.' }, { status: 400 })
   if (avatarUrl && avatarUrl.length > 3000000) return NextResponse.json({ error: 'Profile photo is too large.' }, { status: 400 })
   if (avatarUrl && !/^data:image\/(jpeg|png|webp|gif);base64,/i.test(avatarUrl) && !/^https?:\/\//i.test(avatarUrl)) {
     return NextResponse.json({ error: 'Invalid profile photo.' }, { status: 400 })
@@ -46,8 +48,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ user
 
   const user = await prisma.user.update({
     where: { id: currentUser.id },
-    data: { bio: bio || null, avatarUrl: avatarUrl || null },
-    select: { username: true, displayName: true, bio: true, avatarUrl: true, createdAt: true }
+    data: { bio: bio || null, status: status || null, avatarUrl: avatarUrl || null },
+    select: { username: true, displayName: true, bio: true, status: true, avatarUrl: true, createdAt: true }
   })
   return NextResponse.json({ user })
 }
