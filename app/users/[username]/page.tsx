@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
+import AppHeader from '@/app/components/AppHeader'
 
 type User={username:string;displayName:string;bio?:string|null;status?:string|null;avatarUrl?:string|null;createdAt:string;isOwner?:boolean;_count:{builds:number;followsFollowers:number;followsFollowing:number;socialPosts:number;socialLikes:number};builds:any[];socialPosts:any[]}
 type Achievement={icon:string;title:string;text:string;target:number;value:number;unit:string}
@@ -28,7 +29,7 @@ export default function Profile(){
  ]
  const earned=achievements.filter(a=>a.value>=a.target).length
  const achievementStyles=<style>{`.achievement-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}.achievement-heading h2{font-family:'Barlow Condensed',sans-serif;font-size:30px;text-transform:uppercase;margin:0 0 6px}.achievement-count{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:#ff7135;white-space:nowrap}.achievement-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}.achievement{display:flex;gap:12px;min-height:112px;background:#090d11;border:1px solid #202a33;border-radius:12px;padding:14px}.achievement.earned{border-color:#3b4651}.achievement.locked{opacity:.68}.achievement-icon{width:38px;height:38px;display:grid;place-items:center;background:#151c22;border-radius:10px;font-size:20px;flex:0 0 auto}.achievement.earned .achievement-icon{background:#ff5a1618}.achievement-body{min-width:0;flex:1}.achievement-title{display:flex;justify-content:space-between;gap:8px}.achievement-title b{font-size:13px}.achievement-title span{font-size:10px;color:#818b96;white-space:nowrap}.achievement-body small{display:block;color:#818b96;line-height:1.35;margin-top:5px;min-height:27px}.achievement-progress{height:6px;background:#242c34;border-radius:20px;overflow:hidden;margin:10px 0 6px}.achievement-progress i{display:block;height:100%;background:linear-gradient(90deg,#ff5a16,#ff9a4d)}.achievement-body em{font-style:normal;font-size:9px;color:#ff7135;font-weight:800;text-transform:uppercase;letter-spacing:.7px}.achievement.locked .achievement-body em{color:#818b96}@media(max-width:900px){.achievement-grid{grid-template-columns:1fr 1fr}}@media(max-width:600px){.achievement-grid{grid-template-columns:1fr}.achievement-heading{flex-direction:column}}`}</style>
- return <>{achievementStyles}<main className="dashboard"><header className="topbar"><div className="topbar-inner"><Link className="brand" href="/">BUILD<span>TRACK</span></Link><div className="community-nav"><Link href="/community">Community</Link><Link href="/feed">Feed</Link><Link href="/notifications">Activity</Link><Link href="/dashboard">Garage</Link></div></div></header><section className="dash-main">
+ return <>{achievementStyles}<main className="dashboard"><AppHeader/><section className="dash-main">
  <div className="profile-hero">
   <div className="profile-identity">
    <div className="profile-avatar-wrap">
