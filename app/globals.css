@@ -113,3 +113,22 @@
 .profile-post-composer .post-composer-heading{display:flex;align-items:center;justify-content:space-between;gap:18px}
 .profile-post-composer .post-composer-heading>div{min-width:0}
 @media(max-width:600px){.profile-post-composer .post-composer-heading{align-items:stretch;flex-direction:column}.profile-post-composer .post-composer-heading .btn{width:100%}}
+
+/* Builder profile editor */
+.profile-identity{display:flex;align-items:flex-start;gap:18px}
+.profile-identity-copy{min-width:0;flex:1}
+.profile-avatar-wrap{position:relative;flex:0 0 auto}
+.profile-avatar-wrap .avatar{width:104px;height:104px;border:2px solid #26303a}
+.profile-avatar-edit{display:inline-flex;margin-top:8px;justify-content:center;width:104px;color:#ff8a55;font-size:11px;font-weight:800;cursor:pointer}
+.profile-avatar-edit input{display:none}
+.profile-bio-form{margin-top:8px;max-width:720px}
+.profile-bio-form textarea{display:block;width:100%;min-height:92px;resize:vertical;background:#090d11;border:1px solid #303a44;border-radius:10px;color:#fff;padding:12px 14px;outline:none;line-height:1.5}
+.profile-bio-form textarea:focus{border-color:#ff5a16;box-shadow:0 0 0 3px #ff5a1618}
+.profile-bio-actions{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:9px}
+@media(max-width:600px){
+ .profile-identity{gap:13px}
+ .profile-avatar-wrap .avatar{width:82px;height:82px}
+ .profile-avatar-edit{width:82px}
+ .profile-bio-actions{align-items:stretch;flex-direction:column}
+ .profile-bio-actions .btn{width:100%;min-height:46px}
+}
