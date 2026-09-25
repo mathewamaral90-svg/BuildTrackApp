@@ -172,3 +172,44 @@
 .comment-row input:focus{border-color:#ff5a16;box-shadow:0 0 0 3px #ff5a1618}
 @media(max-width:900px){.social-feed .section-heading{align-items:flex-start;flex-direction:column}.feed-page-title{font-size:48px}}
 @media(max-width:600px){.feed-main{padding-top:28px}.social-card{padding:15px}.social-author-avatar,.social-author .avatar{width:48px;height:48px;font-size:20px}.social-image{max-height:520px}.social-actions .btn{flex:1 1 calc(33.333% - 8px);min-width:0}.comment-row{align-items:stretch}.comment-row .btn{padding-left:13px;padding-right:13px}}
+
+/* Forum + Instagram feed refresh */
+.forum-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin:28px 0 18px;padding:20px 22px;background:linear-gradient(145deg,#11171d,#0d1217);border:1px solid #26303a;border-radius:14px}
+.forum-heading .section-title{margin:4px 0 5px}
+.forum-heading p{margin:0;max-width:650px}
+.help-card{border-radius:12px;border-left:3px solid #303a44;transition:.18s}
+.help-card:hover{border-left-color:#ff5a16;transform:translateY(-1px)}
+.answer{border-left:2px solid #303a44;padding-left:14px}
+.answer.accepted-answer{border-left-color:#ff5a16}
+.instagram-top{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:22px}
+.instagram-composer{background:linear-gradient(145deg,#11171d,#0d1217);border:1px solid #26303a;border-radius:16px;padding:14px;margin-bottom:24px}
+.instagram-photo-picker{display:grid;place-items:center;min-height:150px;border:1px dashed #3b4651;border-radius:12px;overflow:hidden;cursor:pointer;text-align:center;background:#090d11;color:#9ca5ae}
+.instagram-photo-picker input{display:none}
+.instagram-photo-picker strong{display:block;color:#fff;font-size:16px}
+.instagram-photo-picker span{display:block;font-size:12px;margin-top:5px}
+.instagram-photo-picker img{width:100%;max-height:360px;object-fit:cover;display:block}
+.instagram-composer textarea{width:100%;min-height:74px;margin:12px 0 10px;background:#090d11;border:1px solid #303a44;border-radius:10px;color:#fff;padding:12px 14px;resize:vertical;outline:none}
+.instagram-composer-row{display:grid;grid-template-columns:1.2fr 1fr auto;gap:8px}
+.instagram-composer-row input,.instagram-composer-row select{min-width:0;background:#090d11;border:1px solid #303a44;border-radius:10px;color:#fff;padding:11px 12px;outline:none}
+.instagram-feed{display:grid;gap:24px;max-width:640px;margin:0 auto}
+.instagram-post{background:#0d1217;border:1px solid #26303a;border-radius:14px;overflow:hidden}
+.instagram-post-head{display:flex;align-items:center;gap:11px;padding:12px 14px}
+.instagram-avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#12171d;border:1px solid #303a44;flex:0 0 auto}
+.instagram-author{min-width:0;display:grid;gap:2px}
+.instagram-author a{color:#fff}
+.instagram-author span{font-size:11px;color:#818b96;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.instagram-author span a{color:#aeb5bd}
+.instagram-more{margin-left:auto;color:#9aa3ad;font-weight:900;letter-spacing:2px}
+.instagram-post-image{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#080b0e}
+.instagram-post-body{padding:8px 14px 14px}
+.instagram-actions{display:flex;align-items:center;gap:13px}
+.instagram-actions button{border:0;background:none;color:#fff;font-size:25px;padding:4px 0;cursor:pointer}
+.instagram-actions button.liked{color:#ff5a16}
+.instagram-spacer{flex:1}
+.instagram-likes{font-size:13px;margin:2px 0 7px}
+.instagram-caption{margin:0 0 7px;color:#e2e6ea;line-height:1.5;font-size:14px;white-space:pre-wrap}
+.instagram-caption a{color:#fff}
+.instagram-comments-link{border:0;background:none;color:#818b96;padding:4px 0;font-size:13px;cursor:pointer}
+.instagram-date{display:block;color:#626c76;text-transform:uppercase;font-size:9px;letter-spacing:1px;margin-top:10px}
+.instagram-comment-row{border-top:1px solid #202a33;padding-top:8px;margin-top:5px}
+@media(max-width:700px){.forum-heading,.instagram-top{align-items:flex-start;flex-direction:column}.instagram-composer-row{grid-template-columns:1fr}.instagram-feed{margin:0}.instagram-post{border-radius:10px}}
